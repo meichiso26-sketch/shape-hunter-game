@@ -1,612 +1,711 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>圖形大搜查 Shape Hunter</title>
     <style>
-        /* CSS 繪製雲朵 */
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-            z-index: 0;
-            opacity: 0.8;
-            animation: moveClouds 20s linear infinite; /* 雲朵移動動畫 */
-        }
-        .cloud1 { top: 5%; left: 10%; width: 80px; height: 50px; }
-        .cloud2 { top: 10%; right: 15%; width: 120px; height: 70px; animation-delay: -10s; } /* 錯開動畫時間 */
-        .cloud1::before { content: ''; position: absolute; top: -10px; left: 10px; width: 50px; height: 50px; border-radius: 50%; background: inherit; }
-        .cloud2::before { content: ''; position: absolute; top: 5px; right: 15px; width: 70px; height: 70px; border-radius: 50%; background: inherit; }
+      /* CSS 繪製雲朵 */
+      .cloud {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        z-index: 0;
+        opacity: 0.8;
+        animation: moveClouds 20s linear infinite; /* 雲朵移動動畫 */
+      }
+      .cloud1 {
+        top: 5%;
+        left: 10%;
+        width: 80px;
+        height: 50px;
+      }
+      .cloud2 {
+        top: 10%;
+        right: 15%;
+        width: 120px;
+        height: 70px;
+        animation-delay: -10s;
+      } /* 錯開動畫時間 */
+      .cloud1::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: inherit;
+      }
+      .cloud2::before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: inherit;
+      }
 
-        @keyframes moveClouds {
-            0% { transform: translateX(-10%); } /* 從視窗左邊開始 */
-            100% { transform: translateX(100vw); } /* 移動到視窗右邊之外 */
-        }
+      @keyframes moveClouds {
+        0% {
+          transform: translateX(-10%);
+        } /* 從視窗左邊開始 */
+        100% {
+          transform: translateX(100vw);
+        } /* 移動到視窗右邊之外 */
+      }
 
-        body {
-            font-family: 'Comic Sans MS', 'Microsoft JhengHei', sans-serif;
-            /* 背景漸變：藍天 -> 綠地 */
-            background: linear-gradient(to bottom, #87ceeb 0%, #87ceeb 40%, #c9e265 85%, #7aa84e 100%); 
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0; 
-            position: relative; 
-            overflow: hidden; 
-        }
+      body {
+        font-family: "Comic Sans MS", "Microsoft JhengHei", sans-serif;
+        position: "relative";
+        /* 背景漸變：藍天 -> 綠地 */
+        background: linear-gradient(
+          to bottom,
+          #87ceeb 0%,
+          #87ceeb 40%,
+          #c9e265 85%,
+          #7aa84e 100%
+        );
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+      }
 
-        h1 {
-            color: #333;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0px white, -2px -2px 0px white; 
-            z-index: 10;
+      h1 {
+        color: #333;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 0px white, -2px -2px 0px white;
+        z-index: 10;
+      }
+
+      /* 農夫與問題區塊容器 - 使用 Flexbox 確保垂直對齊 */
+      .top-info-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end; /* 底部對齊 */
+        width: 90%;
+        max-width: 800px;
+        margin-bottom: 20px;
+        z-index: 10;
+      }
+
+      /* 農夫區塊 */
+      .farmer-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        width: 150px;
+        flex-shrink: 0;
+      }
+
+      /* 農夫 Emoji 尺寸 */
+      .farmer-emoji {
+        font-size: 8rem;
+        margin-bottom: 0px;
+        transition: transform 0.2s;
+        line-height: 1;
+      }
+
+      /* 對話框 */
+      .speech-bubble {
+        background-color: white;
+        border-radius: 20px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        font-size: 1.1rem;
+        text-align: center;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-right: 10px;
+        color: #333;
+        border: 3px solid #f39c12;
+        flex-grow: 1; /* 佔據剩餘空間 */
+      }
+
+      /* 對話框的尖角 (指向農夫) */
+      .speech-bubble::after {
+        content: "";
+        position: absolute;
+        right: -20px;
+        bottom: 25px;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+        border-left: 20px solid #f39c12;
+      }
+      .speech-bubble::before {
+        content: "";
+        position: absolute;
+        right: -15px;
+        bottom: 25px;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-left: 15px solid white;
+        z-index: 1;
+      }
+
+      .target-display {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #d35400;
+      }
+
+      /* 分數和等級面板 */
+      .info-panel {
+        background: white;
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        width: 90%;
+        max-width: 800px;
+        font-size: 1.2rem;
+        border: 2px dashed #9b59b6;
+        z-index: 10;
+      }
+
+      /* 遊戲網格容器 */
+      .game-grid {
+        display: grid;
+        justify-content: center;
+        gap: 20px; /* 增加間距 */
+        margin-bottom: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 0px;
+        border-radius: 20px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+      }
+
+      /* 遊戲開始後，動態添加 padding 和 grid 佈局 */
+      .game-grid.active {
+        padding: 20px;
+        background-color: transparent; /* 遊戲開始後，隱藏背景色，讓洞穴更自然 */
+        box-shadow: none;
+      }
+
+      /* 地鼠洞 */
+      .hole {
+        width: 120px;
+        height: 120px;
+        background-color: #8d6e63; /* 洞口顏色 */
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 8px solid #5d4037; /* 洞的底部陰影 */
+        box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* 槌子動畫效果 */
+      .hammer-hit {
+        position: fixed; /* 使用 fixed 確保它在視窗中央 */
+        font-size: 15rem;
+        transform: translate(-50%, -50%) rotate(45deg) scale(0);
+        animation: hammerPulse 0.3s ease-out forwards;
+        pointer-events: none;
+        z-index: 1000;
+      }
+      @keyframes hammerPulse {
+        0% {
+          transform: translate(-50%, -50%) rotate(45deg) scale(0);
+          opacity: 0;
         }
-        
-        /* 農夫與問題區塊容器 - 使用 Flexbox 確保垂直對齊 */
+        50% {
+          transform: translate(-50%, -50%) rotate(0deg) scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(-45deg) scale(0.8);
+          opacity: 0;
+        }
+      }
+
+      /* 答錯時，正確圖形會閃爍 */
+      .hole.highlight {
+        animation: highlight-blink 0.8s infinite alternate;
+        border: 5px solid gold !important;
+        box-shadow: 0 0 20px gold !important;
+      }
+      @keyframes highlight-blink {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0.5;
+        }
+      }
+
+      .shape {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        height: 90px;
+        position: absolute;
+        bottom: -100px; /* 藏在地洞裡 */
+        transition: bottom 0.2s;
+      }
+
+      .shape.up {
+        bottom: 10px; /* 彈出來 */
+      }
+
+      button {
+        background-color: #2ecc71;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 5px 0 #27ae60;
+        transition: transform 0.1s;
+        margin-top: 10px;
+        z-index: 10;
+      }
+
+      button:active {
+        transform: translateY(4px);
+        box-shadow: 0 1px 0 #27ae60;
+      }
+
+      #level-indicator {
+        color: #2980b9;
+        font-weight: bold;
+      }
+      #score-board {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+
+      /* 誇張的答對回饋樣式 */
+      .feedback {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 5rem;
+        color: yellow;
+        text-shadow: 4px 4px 8px #f39c12;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 999;
+        width: 100vw;
+      }
+
+      .svg-shape {
+        width: 80px;
+        height: 80px;
+      }
+
+      /* 適應小螢幕 */
+      @media (max-width: 768px) {
         .top-info-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end; /* 底部對齊 */
-            width: 90%;
-            max-width: 800px;
-            margin-bottom: 20px;
-            z-index: 10;
+          flex-direction: column;
+          align-items: center;
         }
-
-        /* 農夫區塊 */
-        .farmer-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            width: 150px; 
-            flex-shrink: 0; 
-        }
-
-        /* 農夫 Emoji 尺寸 */
-        .farmer-emoji {
-            font-size: 8rem; 
-            margin-bottom: 0px; 
-            transition: transform 0.2s;
-            line-height: 1; 
-        }
-
-        /* 對話框 */
         .speech-bubble {
-            background-color: white;
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            position: relative;
-            font-size: 1.1rem;
-            text-align: center;
-            min-height: 80px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-right: 10px; 
-            color: #333;
-            border: 3px solid #f39c12; 
-            flex-grow: 1; /* 佔據剩餘空間 */
+          margin-right: 0;
+          margin-bottom: 30px; /* 增加間距避免重疊 */
         }
-
-        /* 對話框的尖角 (指向農夫) */
-        .speech-bubble::after {
-            content: '';
-            position: absolute;
-            right: -20px; 
-            bottom: 25px; 
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-top: 15px solid transparent;
-            border-bottom: 15px solid transparent;
-            border-left: 20px solid #f39c12; 
+        /* 調整對話框尖角位置 */
+        .speech-bubble::after,
+        .speech-bubble::before {
+          right: initial;
+          bottom: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-top: 20px solid #f39c12;
+          border-left: 15px solid transparent;
+          border-right: 15px solid transparent;
+          border-bottom: none;
         }
-        .speech-bubble::before { 
-            content: '';
-            position: absolute;
-            right: -15px;
-            bottom: 25px;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-top: 12px solid transparent;
-            border-bottom: 12px solid transparent;
-            border-left: 15px solid white;
-            z-index: 1;
+        .speech-bubble::before {
+          border-top: 15px solid white;
         }
-
-        .target-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #d35400;
+        .farmer-section {
+          order: -1;
+          margin-top: 10px;
         }
-
-        /* 分數和等級面板 */
-        .info-panel {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            width: 90%;
-            max-width: 800px;
-            font-size: 1.2rem;
-            border: 2px dashed #9b59b6;
-            z-index: 10;
+        .farmer-emoji {
+          font-size: 6rem;
         }
-        
-        /* 遊戲網格容器 */
-        .game-grid {
-            display: grid;
-            justify-content: center;
-            gap: 20px; /* 增加間距 */
-            margin-bottom: 20px;
-            background-color: rgba(255, 255, 255, 0.8); 
-            padding: 0px; 
-            border-radius: 20px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            z-index: 10;
-        }
-
-        /* 遊戲開始後，動態添加 padding 和 grid 佈局 */
-        .game-grid.active {
-            padding: 20px;
-            background-color: transparent; /* 遊戲開始後，隱藏背景色，讓洞穴更自然 */
-            box-shadow: none;
-        }
-
-
-        /* 地鼠洞 */
-        .hole {
-            width: 120px;
-            height: 120px;
-            background-color: #8d6e63; /* 洞口顏色 */
-            border-radius: 50%;
-            position: relative;
-            overflow: hidden;
-            border-bottom: 8px solid #5d4037; /* 洞的底部陰影 */
-            box-shadow: inset 0 10px 20px rgba(0,0,0,0.3);
-            cursor: pointer; 
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            -webkit-tap-highlight-color: transparent; 
-        }
-
-        /* 槌子動畫效果 */
         .hammer-hit {
-            position: fixed; /* 使用 fixed 確保它在視窗中央 */
-            font-size: 15rem; 
-            transform: translate(-50%, -50%) rotate(45deg) scale(0); 
-            animation: hammerPulse 0.3s ease-out forwards; 
-            pointer-events: none; 
-            z-index: 1000;
+          font-size: 8rem;
         }
-        @keyframes hammerPulse {
-            0% { transform: translate(-50%, -50%) rotate(45deg) scale(0); opacity: 0; }
-            50% { transform: translate(-50%, -50%) rotate(0deg) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); opacity: 0; }
+        .hole {
+          width: 100px;
+          height: 100px;
         }
-        
-        /* 答錯時，正確圖形會閃爍 */
-        .hole.highlight {
-            animation: highlight-blink 0.8s infinite alternate; 
-            border: 5px solid gold !important; 
-            box-shadow: 0 0 20px gold !important; 
+        .svg-shape {
+          width: 70px;
+          height: 70px;
         }
-        @keyframes highlight-blink {
-            from { opacity: 1; }
-            to { opacity: 0.5; }
-        }
-
-        .shape {
-            width: 90px;
-            height: 90px;
-            position: absolute;
-            bottom: -100px; /* 藏在地洞裡 */
-            transition: bottom 0.2s;
-        }
-
         .shape.up {
-            bottom: 10px; /* 彈出來 */
+          bottom: 5px;
         }
-
-        button {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 #27ae60;
-            transition: transform 0.1s;
-            margin-top: 10px;
-            z-index: 10;
-        }
-
-        button:active {
-            transform: translateY(4px);
-            box-shadow: 0 1px 0 #27ae60;
-        }
-
-        #level-indicator { color: #2980b9; font-weight: bold; }
-        #score-board { color: #e74c3c; font-weight: bold; font-size: 1.5rem; }
-
-        /* 誇張的答對回饋樣式 */
-        .feedback {
-            position: fixed;
-            top: 50%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 6rem;
-            color: yellow;
-            text-shadow: 4px 4px 8px #f39c12;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 999;
-        }
-        
-        .svg-shape { width: 80px; height: 80px; }
-
-        /* 適應小螢幕 */
-        @media (max-width: 768px) {
-            .top-info-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .speech-bubble {
-                margin-right: 0;
-                margin-bottom: 30px; /* 增加間距避免重疊 */
-            }
-            /* 調整對話框尖角位置 */
-            .speech-bubble::after, .speech-bubble::before {
-                right: initial;
-                bottom: -20px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-top: 20px solid #f39c12;
-                border-left: 15px solid transparent;
-                border-right: 15px solid transparent;
-                border-bottom: none;
-            }
-            .speech-bubble::before {
-                border-top: 15px solid white;
-            }
-            .farmer-section {
-                order: -1; 
-                margin-top: 10px;
-            }
-            .farmer-emoji {
-                font-size: 6rem; 
-            }
-            .hammer-hit {
-                font-size: 8rem; 
-            }
-            .hole {
-                width: 100px;
-                height: 100px;
-            }
-            .svg-shape { 
-                width: 70px; 
-                height: 70px; 
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="cloud cloud1"></div>
     <div class="cloud cloud2"></div>
 
-    <h1>圖形大搜查 <br><span style="font-size:0.6em">Shape Hunter</span></h1>
+    <h1>圖形大搜查 <br /><span style="font-size: 0.6em">Shape Hunter</span></h1>
 
     <audio id="background-music" loop>
-        <source src="Funny Cartoon Kids Background Music For Videos.mp3" type="audio/mpeg">
-        您的瀏覽器不支援 audio 元素。
+      <source
+        src="Funny Cartoon Kids Background Music For Videos.mp3"
+        type="audio/mpeg"
+      />
+      您的瀏覽器不支援 audio 元素。
     </audio>
 
     <div class="top-info-container">
-        <div class="speech-bubble" id="instruction-bubble">
-            <div class="target-display" id="instruction">
-                請開啟喇叭 🔊<br>
-                Please turn on volume
-            </div>
+      <div class="speech-bubble" id="instruction-bubble">
+        <div class="target-display" id="instruction">
+          請開啟喇叭 🔊<br />
+          Please turn on volume
         </div>
-        
-        <div class="farmer-section">
-            <div class="farmer-emoji" role="img" aria-label="農夫">👨‍🌾</div> 
-        </div>
-    </div>
-    
-    <div class="info-panel">
-        <div>Level: <span id="level-indicator">1</span></div>
-        <div>Score 分數: <span id="score-board">0</span></div>
+      </div>
+
+      <div class="farmer-section">
+        <div class="farmer-emoji" role="img" aria-label="農夫">👨‍🌾</div>
+      </div>
     </div>
 
-    <div class="game-grid" id="grid">
+    <div class="info-panel">
+      <div>Level: <span id="level-indicator">1</span></div>
+      <div>Score 分數: <span id="score-board">0</span></div>
     </div>
+
+    <div class="game-grid" id="grid"></div>
 
     <button id="start-btn" onclick="startGame()">開始遊戲 / Start</button>
 
     <div class="feedback" id="feedback"></div>
 
     <script>
-        // --- 1. 音效系統 (叮咚聲) ---
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx;
+      // --- 1. 音效系統 (叮咚聲) ---
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      let audioCtx;
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+      function initAudio() {
+        if (!audioCtx) {
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+      }
+
+      function playDingDong() {
+        if (!audioCtx) return;
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(1046.5, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(
+          1318.51,
+          audioCtx.currentTime + 0.1
+        );
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.01,
+          audioCtx.currentTime + 0.5
+        );
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.6);
+      }
+
+      // --- 2. 語音朗讀系統 (Text-to-Speech) ---
+      function speakText(textEN, rateEN, textTW, rateTW) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+
+        const utterEN = new SpeechSynthesisUtterance(textEN);
+        utterEN.lang = "en-US";
+        utterEN.rate = rateEN;
+
+        const utterTW = new SpeechSynthesisUtterance(textTW);
+        utterTW.lang = "zh-HK";
+        utterTW.rate = rateTW;
+
+        window.speechSynthesis.speak(utterEN);
+        window.speechSynthesis.speak(utterTW);
+      }
+
+      // --- 3. 背景音樂控制 (使用 MP3 Audio 標籤) ---
+      const backgroundMusic = document.getElementById("background-music");
+
+      function playBackgroundMusic() {
+        // *** 音量設定為 10% (0.1) ***
+        backgroundMusic.volume = 0.1;
+        backgroundMusic.play().catch((error) => {
+          console.log("Background music autoplay failed:", error);
+        });
+      }
+
+      // --- 4. 遊戲邏輯 ---
+      let score = 0;
+      let currentLevel = 1;
+      let isPlaying = false;
+      let currentTargetShape = "";
+      let holesCount = 2;
+      let correctHoleElement = null;
+
+      const shapes = [
+        {
+          id: "circle",
+          nameTW: "圓形",
+          nameEN: "Circle",
+          color: "#e74c3c",
+          svg: `<svg viewBox="0 0 100 100" class="svg-shape"><circle cx="50" cy="50" r="45" fill="#e74c3c" stroke="black" stroke-width="2"/></svg>`,
+        },
+        {
+          id: "square",
+          nameTW: "正方形",
+          nameEN: "Square",
+          color: "#3498db",
+          svg: `<svg viewBox="0 0 100 100" class="svg-shape"><rect x="10" y="10" width="80" height="80" fill="#3498db" stroke="black" stroke-width="2"/></svg>`,
+        },
+        {
+          id: "triangle",
+          nameTW: "三角形",
+          nameEN: "Triangle",
+          color: "#2ecc71",
+          svg: `<svg viewBox="0 0 100 100" class="svg-shape"><polygon points="50,5 95,95 5,95" fill="#2ecc71" stroke="black" stroke-width="2"/></svg>`,
+        },
+      ];
+
+      const grid = document.getElementById("grid");
+      const instruction = document.getElementById("instruction");
+      const scoreBoard = document.getElementById("score-board");
+      const levelDisplay = document.getElementById("level-indicator");
+      const startBtn = document.getElementById("start-btn");
+      const feedback = document.getElementById("feedback");
+      const instructionBubble = document.getElementById("instruction-bubble");
+
+      function initBoard(numHoles) {
+        grid.innerHTML = "";
+        grid.classList.add("active"); // 開始遊戲時，添加 active 類以設置 grid 佈局
+
+        // 讓 grid 根據洞的數量自動調整佈局
+        let columns = numHoles;
+        if (numHoles === 4) {
+          // 4個洞排成 2x2
+          grid.style.gridTemplateColumns = `repeat(2, 1fr)`;
+          grid.style.maxWidth = "300px";
+        } else if (numHoles === 3) {
+          // 3個洞排成 3個
+          grid.style.gridTemplateColumns = `repeat(3, 1fr)`;
+          grid.style.maxWidth = "450px";
+        } else {
+          // 2個洞
+          grid.style.gridTemplateColumns = `repeat(2, 1fr)`;
+          grid.style.maxWidth = "300px";
         }
 
-        function playDingDong() {
-            if (!audioCtx) return;
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(1318.51, audioCtx.currentTime + 0.1);
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.6);
+        for (let i = 0; i < numHoles; i++) {
+          let hole = document.createElement("div");
+          hole.classList.add("hole");
+
+          let shapeDiv = document.createElement("div");
+          shapeDiv.classList.add("shape");
+          shapeDiv.id = `mole-${i}`;
+
+          // 點擊事件綁定在地洞上
+          hole.onclick = (e) => {
+            // 點擊時顯示槌子動畫
+            showHammerAnimation(e.clientX, e.clientY);
+            checkHit(shapeDiv);
+          };
+
+          hole.appendChild(shapeDiv);
+          grid.appendChild(hole);
+        }
+      }
+
+      // 顯示槌子動畫函式
+      function showHammerAnimation(x, y) {
+        const hammer = document.createElement("div");
+        hammer.classList.add("hammer-hit");
+        hammer.innerText = "🔨"; /* 槌子 Emoji */
+
+        // 根據點擊位置設置槌子位置
+        hammer.style.left = `${x}px`;
+        hammer.style.top = `${y}px`;
+
+        document.body.appendChild(hammer);
+
+        // 動畫結束後移除槌子元素
+        hammer.addEventListener("animationend", () => {
+          hammer.remove();
+        });
+      }
+
+      function startGame() {
+        initAudio();
+        playBackgroundMusic(); // 點擊開始後播放背景音樂 (MP3)
+        score = 0;
+        currentLevel = 1;
+        scoreBoard.innerText = score;
+        startBtn.style.display = "none";
+        isPlaying = true;
+        updateLevelSettings();
+        nextRound();
+      }
+
+      function updateLevelSettings() {
+        if (currentLevel === 1) {
+          holesCount = 2;
+        } else if (currentLevel === 2) {
+          holesCount = 3;
+        } else {
+          holesCount = 4;
+        }
+        levelDisplay.innerText = `${currentLevel}`;
+        initBoard(holesCount);
+      }
+
+      function nextRound() {
+        if (!isPlaying) return;
+
+        if (correctHoleElement) {
+          correctHoleElement.parentElement.classList.remove("highlight");
         }
 
-        // --- 2. 語音朗讀系統 (Text-to-Speech) ---
-        function speakText(textEN, rateEN, textTW, rateTW) {
-            if (!window.speechSynthesis) return;
-            window.speechSynthesis.cancel();
+        const targetIndex = Math.floor(Math.random() * shapes.length);
+        const targetObj = shapes[targetIndex];
+        currentTargetShape = targetObj.id;
 
-            const utterEN = new SpeechSynthesisUtterance(textEN);
-            utterEN.lang = 'en-US'; 
-            utterEN.rate = rateEN;
-
-            const utterTW = new SpeechSynthesisUtterance(textTW);
-            utterTW.lang = 'zh-HK'; 
-            utterTW.rate = rateTW;
-
-            window.speechSynthesis.speak(utterEN);
-            window.speechSynthesis.speak(utterTW);
-        }
-        
-        // --- 3. 背景音樂控制 (使用 MP3 Audio 標籤) ---
-        const backgroundMusic = document.getElementById('background-music');
-        
-        function playBackgroundMusic() {
-            // *** 音量設定為 10% (0.1) ***
-            backgroundMusic.volume = 0.1; 
-            backgroundMusic.play().catch(error => {
-                console.log("Background music autoplay failed:", error);
-            });
-        }
-        
-        // --- 4. 遊戲邏輯 ---
-        let score = 0;
-        let currentLevel = 1;
-        let isPlaying = false;
-        let currentTargetShape = ""; 
-        let holesCount = 2; 
-        let correctHoleElement = null; 
-
-        const shapes = [
-            { id: 'circle', nameTW: '圓形', nameEN: 'Circle', color: '#e74c3c', svg: `<svg viewBox="0 0 100 100" class="svg-shape"><circle cx="50" cy="50" r="45" fill="#e74c3c" stroke="black" stroke-width="2"/></svg>` },
-            { id: 'square', nameTW: '正方形', nameEN: 'Square', color: '#3498db', svg: `<svg viewBox="0 0 100 100" class="svg-shape"><rect x="10" y="10" width="80" height="80" fill="#3498db" stroke="black" stroke-width="2"/></svg>` },
-            { id: 'triangle', nameTW: '三角形', nameEN: 'Triangle', color: '#2ecc71', svg: `<svg viewBox="0 0 100 100" class="svg-shape"><polygon points="50,5 95,95 5,95" fill="#2ecc71" stroke="black" stroke-width="2"/></svg>` }
-        ];
-
-        const grid = document.getElementById('grid');
-        const instruction = document.getElementById('instruction');
-        const scoreBoard = document.getElementById('score-board');
-        const levelDisplay = document.getElementById('level-indicator');
-        const startBtn = document.getElementById('start-btn');
-        const feedback = document.getElementById('feedback');
-        const instructionBubble = document.getElementById('instruction-bubble');
-
-        function initBoard(numHoles) {
-            grid.innerHTML = '';
-            grid.classList.add('active'); // 開始遊戲時，添加 active 類以設置 grid 佈局
-            
-            // 讓 grid 根據洞的數量自動調整佈局
-            let columns = numHoles;
-            if (numHoles === 4) {
-                // 4個洞排成 2x2 
-                grid.style.gridTemplateColumns = `repeat(2, 1fr)`;
-                grid.style.maxWidth = '300px'; 
-            } else if (numHoles === 3) {
-                // 3個洞排成 3個
-                grid.style.gridTemplateColumns = `repeat(3, 1fr)`;
-                grid.style.maxWidth = '450px'; 
-            } else { // 2個洞
-                grid.style.gridTemplateColumns = `repeat(2, 1fr)`;
-                grid.style.maxWidth = '300px'; 
-            }
-            
-            for (let i = 0; i < numHoles; i++) {
-                let hole = document.createElement('div');
-                hole.classList.add('hole');
-                
-                let shapeDiv = document.createElement('div');
-                shapeDiv.classList.add('shape');
-                shapeDiv.id = `mole-${i}`; 
-                
-                // 點擊事件綁定在地洞上
-                hole.onclick = (e) => {
-                    // 點擊時顯示槌子動畫
-                    showHammerAnimation(e.clientX, e.clientY);
-                    checkHit(shapeDiv);
-                };
-                
-                hole.appendChild(shapeDiv);
-                grid.appendChild(hole);
-            }
-        }
-
-        // 顯示槌子動畫函式
-        function showHammerAnimation(x, y) {
-            const hammer = document.createElement('div');
-            hammer.classList.add('hammer-hit');
-            hammer.innerText = '🔨'; /* 槌子 Emoji */
-            
-            // 根據點擊位置設置槌子位置
-            hammer.style.left = `${x}px`;
-            hammer.style.top = `${y}px`;
-            
-            document.body.appendChild(hammer);
-
-            // 動畫結束後移除槌子元素
-            hammer.addEventListener('animationend', () => {
-                hammer.remove();
-            });
-        }
-
-
-        function startGame() {
-            initAudio(); 
-            playBackgroundMusic(); // 點擊開始後播放背景音樂 (MP3)
-            score = 0;
-            currentLevel = 1;
-            scoreBoard.innerText = score;
-            startBtn.style.display = 'none';
-            isPlaying = true;
-            updateLevelSettings();
-            nextRound();
-        }
-
-        function updateLevelSettings() {
-            if (currentLevel === 1) {
-                holesCount = 2;
-            } else if (currentLevel === 2) {
-                holesCount = 3;
-            } else {
-                holesCount = 4;
-            }
-            levelDisplay.innerText = `${currentLevel}`;
-            initBoard(holesCount);
-        }
-
-        function nextRound() {
-            if (!isPlaying) return;
-
-            if (correctHoleElement) {
-                correctHoleElement.parentElement.classList.remove('highlight');
-            }
-
-            const targetIndex = Math.floor(Math.random() * shapes.length);
-            const targetObj = shapes[targetIndex];
-            currentTargetShape = targetObj.id;
-
-            instruction.innerHTML = `
+        instruction.innerHTML = `
                 找找看: <span style="color:${targetObj.color}">${targetObj.nameTW}</span> <br> 
                 Find: <span style="color:${targetObj.color}">${targetObj.nameEN}</span>
             `;
 
-            speakText(targetObj.nameEN, 0.8, targetObj.nameTW, 0.8);
+        speakText(targetObj.nameEN, 0.8, targetObj.nameTW, 0.8);
 
-            const holes = document.querySelectorAll('.shape');
-            holes.forEach(h => {
-                h.classList.remove('up');
-                h.innerHTML = '';
-                h.dataset.id = '';
-            });
+        const holes = document.querySelectorAll(".shape");
+        holes.forEach((h) => {
+          h.classList.remove("up");
+          h.innerHTML = "";
+          h.dataset.id = "";
+        });
 
-            const correctHoleIndex = Math.floor(Math.random() * holesCount);
-            correctHoleElement = holes[correctHoleIndex]; 
-            correctHoleElement.innerHTML = targetObj.svg;
-            correctHoleElement.dataset.id = targetObj.id;
+        const correctHoleIndex = Math.floor(Math.random() * holesCount);
+        correctHoleElement = holes[correctHoleIndex];
+        correctHoleElement.innerHTML = targetObj.svg;
+        correctHoleElement.dataset.id = targetObj.id;
 
-            for (let i = 0; i < holesCount; i++) {
-                if (holes[i] !== correctHoleElement) { 
-                    let distractorObj;
-                    do {
-                        distractorObj = shapes[Math.floor(Math.random() * shapes.length)];
-                    } while (distractorObj.id === targetObj.id);
-                    holes[i].innerHTML = distractorObj.svg;
-                    holes[i].dataset.id = distractorObj.id;
-                }
-            }
-
-            setTimeout(() => {
-                holes.forEach(h => h.classList.add('up'));
-            }, 1000); 
+        for (let i = 0; i < holesCount; i++) {
+          if (holes[i] !== correctHoleElement) {
+            let distractorObj;
+            do {
+              distractorObj = shapes[Math.floor(Math.random() * shapes.length)];
+            } while (distractorObj.id === targetObj.id);
+            holes[i].innerHTML = distractorObj.svg;
+            holes[i].dataset.id = distractorObj.id;
+          }
         }
 
-        function checkHit(element) {
-            // 確保點擊的圖形已經彈出
-            if (!element.classList.contains('up')) return;
+        setTimeout(() => {
+          holes.forEach((h) => h.classList.add("up"));
+        }, 1000);
+      }
 
-            // 答題後取消閃爍
-            if (correctHoleElement && correctHoleElement.parentElement.classList.contains('highlight')) {
-                 correctHoleElement.parentElement.classList.remove('highlight');
-            }
+      function checkHit(element) {
+        // 確保點擊的圖形已經彈出
+        if (!element.classList.contains("up")) return;
 
-            if (element.dataset.id === currentTargetShape) {
-                // 答對邏輯
-                speakText("Fantastic!", 1.5, "好嘢！你答啱啦！做得太好啦！", 1.5);
-                playDingDong(); 
-
-                score += 10;
-                scoreBoard.innerText = score;
-                element.classList.remove('up');
-                showFeedback(true, "💥 勁呀！");
-                
-                checkLevelUp();
-                setTimeout(nextRound, 2000); 
-            } else {
-                // 答錯邏輯
-                speakText("Try again", 0.9, "答錯啦，再試吓啦", 0.9);
-                
-                // 視覺提示：正確的洞開始閃爍
-                if (correctHoleElement && correctHoleElement.parentElement) {
-                    correctHoleElement.parentElement.classList.add('highlight');
-                }
-                
-                // 答錯圖形搖晃
-                element.style.transform = "translateX(5px)";
-                setTimeout(() => element.style.transform = "translateX(0)", 100);
-            }
+        // 答題後取消閃爍
+        if (
+          correctHoleElement &&
+          correctHoleElement.parentElement.classList.contains("highlight")
+        ) {
+          correctHoleElement.parentElement.classList.remove("highlight");
         }
 
-        function showFeedback(isSuccess, text = "⭕ Great!") {
-            if(isSuccess) {
-                feedback.innerText = text; 
-                feedback.style.opacity = 1;
-                feedback.style.transition = 'opacity 0s';
-                setTimeout(() => {
-                    feedback.style.opacity = 0;
-                    feedback.style.transition = 'opacity 1s';
-                }, 800);
-            }
-        }
+        if (element.dataset.id === currentTargetShape) {
+          // 答對邏輯
+          speakText("Fantastic!", 1.5, "好嘢！你答啱啦！做得太好啦！", 1.5);
+          playDingDong();
 
-        function checkLevelUp() {
-            if (score >= 50 && currentLevel === 1) {
-                currentLevel = 2;
-                speakText("Good Job", 1.0, "好犀利！", 1.0);
-                alert("好犀利！升級了！\nLevel Up! Next Level: 3 Holes");
-                updateLevelSettings();
-            } else if (score >= 150 && currentLevel === 2) {
-                currentLevel = 3;
-                speakText("Wonderful", 1.0, "太強啦！", 1.0);
-                alert("太強啦！最高級！\nWow! Level 3!");
-                updateLevelSettings();
-            }
+          score += 10;
+          scoreBoard.innerText = score;
+          element.classList.remove("up");
+          showFeedback(true, "💥 勁呀！");
+
+          checkLevelUp();
+          setTimeout(nextRound, 2000);
+        } else {
+          // 答錯邏輯
+          speakText("Try again", 0.9, "答錯啦，再試吓啦", 0.9);
+
+          // 視覺提示：正確的洞開始閃爍
+          if (correctHoleElement && correctHoleElement.parentElement) {
+            correctHoleElement.parentElement.classList.add("highlight");
+          }
+
+          // 答錯圖形搖晃
+          element.style.transform = "translateX(5px)";
+          setTimeout(() => (element.style.transform = "translateX(0)"), 100);
         }
+      }
+
+      function showFeedback(isSuccess, text = "⭕ Great!") {
+        if (isSuccess) {
+          feedback.innerText = text;
+          feedback.style.opacity = 1;
+          feedback.style.transition = "opacity 0s";
+          setTimeout(() => {
+            feedback.style.opacity = 0;
+            feedback.style.transition = "opacity 1s";
+          }, 800);
+        }
+      }
+
+      function checkLevelUp() {
+        if (score >= 50 && currentLevel === 1) {
+          currentLevel = 2;
+          speakText("Good Job", 1.0, "好犀利！", 1.0);
+          alert("好犀利！升級了！\nLevel Up! Next Level: 3 Holes");
+          updateLevelSettings();
+        } else if (score >= 150 && currentLevel === 2) {
+          currentLevel = 3;
+          speakText("Wonderful", 1.0, "太強啦！", 1.0);
+          alert("太強啦！最高級！\nWow! Level 3!");
+          updateLevelSettings();
+        }
+      }
     </script>
-</body>
+  </body>
 </html>
